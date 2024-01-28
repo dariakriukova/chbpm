@@ -1,5 +1,2 @@
-*.zip
-*.mp3
-*.m4a
-adjusted/
-music/
+__pycache__
+.venv
