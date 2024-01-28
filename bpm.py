@@ -1,10 +1,10 @@
 import librosa
+import audioread
 import os
 import shutil
 import subprocess
 import traceback
 import numpy as np
-import audioread
 
 def analyze_bpm(file_path):
     with audioread.audio_open(file_path) as f:
@@ -43,7 +43,7 @@ def process_audio_files(source_folder, output_folder):
                 bpm = analyze_bpm(file_path)
                 print(f"Analyzing '{file_name}' - BPM: {bpm}")
 
-                if 80 <= bpm < 100 or 150 <= bpm <= 210:
+                if 80 <= bpm < 100 or 147 <= bpm <= 210:
                     target_bpm = 90 if bpm < 100 else 180
                     output_path = os.path.join(output_folder, file_name)
                     print(f"Adjusting '{file_name}' from BPM: {bpm} to {target_bpm}")
