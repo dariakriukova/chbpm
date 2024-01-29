@@ -38,7 +38,7 @@ def adjust_tempo_ffmpeg(input_file, output_file, original_bpm, target_bpm):
     logging.info('Executing command: ' + ' '.join(command))
     subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-def process_audio_files(input_folder_path, output_folder_path, target_bpm=None):
+def process_audio_files(input_folder_path, output_folder_path, target_bpm=None, range_percentage=15):
     if not os.path.exists(output_folder_path):
         os.makedirs(output_folder_path)
     
@@ -56,8 +56,8 @@ def process_audio_files(input_folder_path, output_folder_path, target_bpm=None):
 
                 bpm_to_use = None
                 if target_bpm:
-                    lower_bound = target_bpm * 0.85
-                    upper_bound = target_bpm * 1.15
+                    lower_bound = target_bpm * (1 - range_percentage / 100)
+                    upper_bound = target_bpm * (1 + range_percentage / 100)
                     if lower_bound <= bpm <= upper_bound:
                         bpm_to_use = target_bpm
                 else:
@@ -85,7 +85,7 @@ def process_audio_files(input_folder_path, output_folder_path, target_bpm=None):
                 traceback.print_exc()
 
 
-def main(input_path=None, output_path=None, target_bpm=None):
+def main(input_path=None, output_path=None, target_bpm=None, range_percentage=15):
     if input_path is None:
         input_folder_path = input("Please enter the path of your music folder: ")
     else:
@@ -96,7 +96,7 @@ def main(input_path=None, output_path=None, target_bpm=None):
     else:
         output_folder_path = output_path
 
-    process_audio_files(input_folder_path, output_folder_path, target_bpm)
+    process_audio_files(input_folder_path, output_folder_path, target_bpm, range_percentage)
 
     logging.info("Processing completed.")
 
