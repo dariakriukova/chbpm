@@ -74,12 +74,16 @@ def process_audio_files(source_folder, output_folder):
                 logging.error(f"Error processing {file_name}: {e}")
                 traceback.print_exc()
 
-def main(path):
-    if path is None:
+def main(input_path=None, output_path=None):
+    if input_path is None:
         input_folder_path = input("Please enter the path of your music folder: ")
     else:
-        input_folder_path = path
-    output_folder_path = os.path.join(os.path.dirname(input_folder_path), "adjusted")
+        input_folder_path = input_path
+    
+    if output_path is None:
+        output_folder_path = os.path.join(os.path.dirname(input_folder_path), "adjusted")
+    else:
+        output_folder_path = output_path
 
     process_audio_files(input_folder_path, output_folder_path)
 
