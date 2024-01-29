@@ -14,13 +14,13 @@
             "args": ["/tmp/running"]
         },
         {
-            "name": "Measure IV guard-ring",
+            "name": "chbpm custom ffmpeg_options",
             "type": "python",
             "request": "launch",
-            "module": "measure",
+            "module": "chbpm",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "args": ["-c", ".\\measure\\iv-guard-ring.yaml", "iv", "-w", "Test", "-s", "1", "-n", "X0101"]
+            "args": ["/tmp/running", "--ffmeg_options=\"-c:a libfdk_aac\""]
         }
     ]
 }
