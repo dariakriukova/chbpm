@@ -8,13 +8,15 @@ def main():
     
     parser.add_argument('input_path', help="Path to the input music folder")
     parser.add_argument('-o', '--output_path', default=None, help="Path to the output folder")
+    parser.add_argument('-t', '--target_bpm', type=int, default=None, help="Optional target BPM for tempo adjustment")
+
     
     args = parser.parse_args()
     
     if args.output_path is None:
         args.output_path = args.input_path + "_adjusted"
     
-    bpm.main(args.input_path, args.output_path)
+    bpm.main(args.input_path, args.output_path, args.target_bpm)
 
 if __name__ == "__main__":
     main()

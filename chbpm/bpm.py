@@ -38,10 +38,11 @@ def adjust_tempo_ffmpeg(input_file, output_file, original_bpm, target_bpm):
     logging.info('Executing command: ' + ' '.join(command))
     subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-def process_audio_files(source_folder, output_folder):
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-    for root, dirs, files in os.walk(source_folder):
+def process_audio_files(input_folder_path, output_folder_path, target_bpm=None):
+    if not os.path.exists(output_folder_path):
+        os.makedirs(output_folder_path)
+    
+    for root, dirs, files in os.walk(input_folder_path):
         for file_name in files:
             file_path = os.path.join(root, file_name)
 
@@ -52,21 +53,30 @@ def process_audio_files(source_folder, output_folder):
                     logging.warning(f"Failed to analyze BPM for '{file_name}'")
                     continue
                 logging.info(f"File: {file_name} - BPM: {bpm}")
+
+                bpm_to_use = None
+                if target_bpm:
+                    lower_bound = target_bpm * 0.85
+                    upper_bound = target_bpm * 1.15
+                    if lower_bound <= bpm <= upper_bound:
+                        bpm_to_use = target_bpm
+                else:
+                    if 80 <= bpm < 100:
+                        bpm_to_use = 90
+                    elif 147 <= bpm <= 210:
+                        bpm_to_use = 180
                 
-                if 80 <= bpm < 100 or 147 <= bpm <= 210:
-                    target_bpm = 90 if bpm < 100 else 180
-                    
+                if bpm_to_use:
                     base_name, _ = os.path.splitext(file_name)
-                    relative_path = os.path.relpath(root, source_folder)
-                    new_dir = os.path.join(output_folder, relative_path)
+                    relative_path = os.path.relpath(root, input_folder_path)
+                    new_dir = os.path.join(output_folder_path, relative_path)
                     if not os.path.exists(new_dir):
                         os.makedirs(new_dir)
 
                     output_path = os.path.join(new_dir, base_name + '.m4a')
                     
-                    logging.info(f"Adjusting '{file_name}' from BPM: {bpm} to {target_bpm}")
-                    adjust_tempo_ffmpeg(file_path, output_path, bpm, target_bpm)
-
+                    logging.info(f"Adjusting '{file_name}' from BPM: {bpm} to {bpm_to_use}")
+                    adjust_tempo_ffmpeg(file_path, output_path, bpm, bpm_to_use)
                 else:
                     logging.info(f"'{file_name}' remains unchanged - BPM: {bpm}")
 
@@ -74,7 +84,8 @@ def process_audio_files(source_folder, output_folder):
                 logging.error(f"Error processing {file_name}: {e}")
                 traceback.print_exc()
 
-def main(input_path=None, output_path=None):
+
+def main(input_path=None, output_path=None, target_bpm=None):
     if input_path is None:
         input_folder_path = input("Please enter the path of your music folder: ")
     else:
@@ -85,7 +96,7 @@ def main(input_path=None, output_path=None):
     else:
         output_folder_path = output_path
 
-    process_audio_files(input_folder_path, output_folder_path)
+    process_audio_files(input_folder_path, output_folder_path, target_bpm)
 
     logging.info("Processing completed.")
 
