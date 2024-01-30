@@ -11,10 +11,30 @@ Rhythm Runner is a Python-based tool designed for analyzing and adjusting the te
 - **Error Logging**: Detailed logging for troubleshooting, including optional suppression of verbose `ffmpeg` metadata output.
 
 ## Installation
-Ensure Python and `ffmpeg` are installed on your system, then:
+Ensure Python and `ffmpeg` are installed on your system.
+### For Users
+```bash
+pip install chbpm==0.1.0
+```
 
-1. Clone or download this repository.
-2. Install required Python packages:  
+### For Developers
+1. Install Pipenv:
+```bash
+pip install pipenv
+```
+2. Clone this repository.
+```bash
+git clone https://github.com/dariakriukova/rhythm-is-a-runner.git
+```
+3. Navigate to the Project Directory
+4. Install Dependencies:
+```bash
+pipenv install
+```
+5. Activate the Virtual Environment:
+```bash
+pipenv shell
+```
 
 ## Usage
 Run the tool from the command line, specifying the input folder and other optional parameters:
@@ -40,4 +60,9 @@ python -m chbpm <input_path> -t <target_bpm>
 flexibility in BPM adjustment.  
 ```bash
 python -m chbpm <input_path> -r <range_percentage>
+```
+
+- `--log`: Set log level. INFO by default.
+```bash
+python -m chbpm <input_path> --log DEBUG
 ```

@@ -1,6 +1,5 @@
 import chbpm.bpm as bpm
 import argparse
-import logging
 
 
 def main():
@@ -27,19 +26,8 @@ def main():
     parser.add_argument(
         "--ffmpeg_options", help="Additional FFmpeg command line options"
     )
-    parser.add_argument(
-        "--log", help="Set log level", default="INFO"
-    )
 
     args = parser.parse_args()
-
-    numeric_level = getattr(logging, args.log.upper(), None)
-    if not isinstance(numeric_level, int):
-        raise ValueError('Invalid log level: %s' % args.log)
-    logging.basicConfig(level=numeric_level,
-        format="%(asctime)s - %(levelname)s - %(message)s"
-    )
-
 
     bpm.main(
         args.input_path,

@@ -9,6 +9,9 @@ import logging
 warnings.filterwarnings("ignore", category=FutureWarning, module="librosa.core.audio")
 warnings.filterwarnings("ignore")
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 def analyze_bpm(file_path):
@@ -45,10 +48,10 @@ def adjust_tempo_ffmpeg(
     if ffmpeg_options:
         command.extend(ffmpeg_options.split(" "))
 
-    logging.debug("Executing command: " + " ".join(command))
+    logging.info("Executing command: " + " ".join(command))
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.stdout:
-        logging.debug("FFmpeg Output: " + result.stdout.decode('utf-8'))
+        logging.info("FFmpeg Output: " + result.stdout.decode('utf-8'))
     if result.stderr:
         logging.error("FFmpeg Error: " + result.stderr.decode('utf-8'))
 
