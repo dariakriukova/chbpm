@@ -1,17 +1,17 @@
 import librosa
 import audioread
 import os
-import shutil
 import subprocess
 import traceback
-import numpy as np
 import warnings
 import logging
 
-warnings.filterwarnings('ignore', category=FutureWarning, module='librosa.core.audio')
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore", category=FutureWarning, module="librosa.core.audio")
+warnings.filterwarnings("ignore")
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 def analyze_bpm(file_path):
@@ -25,26 +25,43 @@ def analyze_bpm(file_path):
         return None
 
 
-def adjust_tempo_ffmpeg(input_file, output_file, original_bpm, target_bpm, ffmpeg_options):
+def adjust_tempo_ffmpeg(
+    input_file, output_file, original_bpm, target_bpm, ffmpeg_options
+):
     tempo_factor = target_bpm / original_bpm
     command = [
-        'ffmpeg', '-i', input_file,
-        '-filter:a', f'atempo={tempo_factor}',
-        '-c:v', 'copy', '-map', '0',
-        output_file
+        "ffmpeg",
+        "-loglevel",
+        "error",
+        "-i",
+        input_file,
+        "-filter:a",
+        f"atempo={tempo_factor}",
+        "-c:v",
+        "copy",
+        "-map",
+        "0",
+        "-y",
+        output_file,
     ]
 
     if ffmpeg_options:
-        command.extend(ffmpeg_options.split(' '))
+        command.extend(ffmpeg_options.split(" "))
 
-    logging.info('Executing command: ' + ' '.join(command))
-    subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    
+    logging.info("Executing command: " + " ".join(command))
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.stdout:
+        logging.info("FFmpeg Output: " + result.stdout.decode('utf-8'))
+    if result.stderr:
+        logging.error("FFmpeg Error: " + result.stderr.decode('utf-8'))
 
-def process_audio_files(input_dir, output_dir, target_bpm, range_percentage, ffmpeg_options):
+
+def process_audio_files(
+    input_dir, output_dir, target_bpm, range_percentage, ffmpeg_options
+):
     lower_bound = target_bpm * (1 - range_percentage / 100)
     upper_bound = target_bpm * (1 + range_percentage / 100)
-    
+
     for root, dirs, files in os.walk(input_dir):
         for file_name in files:
             file_path = os.path.join(root, file_name)
@@ -65,18 +82,19 @@ def process_audio_files(input_dir, output_dir, target_bpm, range_percentage, ffm
                 else:
                     logging.info(f"'{file_name}' remains unchanged - BPM: {bpm}")
                     continue
-                
+
                 relative_path = os.path.relpath(root, input_dir)
                 new_dir = os.path.join(output_dir, relative_path)
                 if not os.path.exists(new_dir):
                     os.makedirs(new_dir)
 
                 base_name, _ = os.path.splitext(file_name)
-                output_path = os.path.join(new_dir, f'{base_name}.m4a')
-                
+                output_path = os.path.join(new_dir, f"{base_name}.m4a")
+
                 logging.info(f"Adjusting '{file_name}' from BPM: {bpm} to {bpm_to_use}")
-                adjust_tempo_ffmpeg(file_path, output_path, bpm, bpm_to_use, ffmpeg_options)
-                    
+                adjust_tempo_ffmpeg(
+                    file_path, output_path, bpm, bpm_to_use, ffmpeg_options
+                )
 
             except Exception as e:
                 logging.error(f"Error processing {file_name}: {e}")
@@ -86,8 +104,9 @@ def process_audio_files(input_dir, output_dir, target_bpm, range_percentage, ffm
 def main(input_path, output_path, target_bpm, range_percentage, ffmpeg_options):
     if not os.path.exists(output_path):
         os.makedirs(output_path)
-    
-    process_audio_files(input_path, output_path, target_bpm, range_percentage, ffmpeg_options)
+
+    process_audio_files(
+        input_path, output_path, target_bpm, range_percentage, ffmpeg_options
+    )
 
     logging.info("Processing completed.")
-
