@@ -11,7 +11,7 @@
             "module": "chbpm",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "args": ["/tmp/running"]
+            "args": ["../music"]
         },
         {
             "name": "chbpm custom ffmpeg_options",

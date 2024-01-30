@@ -40,12 +40,12 @@ def adjust_tempo_ffmpeg(input_file, output_file, original_bpm, target_bpm, ffmpe
     logging.info('Executing command: ' + ' '.join(command))
     subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
-    exit()
 
-
-def process_audio_files(input_path, output_path, target_bpm, range_percentage, ffmpeg_options):
-
-    for root, dirs, files in os.walk(input_path):
+def process_audio_files(input_dir, output_dir, target_bpm, range_percentage, ffmpeg_options):
+    lower_bound = target_bpm * (1 - range_percentage / 100)
+    upper_bound = target_bpm * (1 + range_percentage / 100)
+    
+    for root, dirs, files in os.walk(input_dir):
         for file_name in files:
             file_path = os.path.join(root, file_name)
 
@@ -58,8 +58,6 @@ def process_audio_files(input_path, output_path, target_bpm, range_percentage, f
                 logging.info(f"File: {file_name} - BPM: {bpm}")
 
                 bpm_to_use = None
-                lower_bound = target_bpm * (1 - range_percentage / 100)
-                upper_bound = target_bpm * (1 + range_percentage / 100)
                 if lower_bound <= bpm <= upper_bound:
                     bpm_to_use = target_bpm
                 elif lower_bound <= bpm * 2 <= upper_bound:
@@ -68,12 +66,12 @@ def process_audio_files(input_path, output_path, target_bpm, range_percentage, f
                     logging.info(f"'{file_name}' remains unchanged - BPM: {bpm}")
                     continue
                 
-                base_name, _ = os.path.splitext(file_name)
-                relative_path = os.path.relpath(root, input_path)
-                new_dir = os.path.join(output_path, relative_path)
+                relative_path = os.path.relpath(root, input_dir)
+                new_dir = os.path.join(output_dir, relative_path)
                 if not os.path.exists(new_dir):
                     os.makedirs(new_dir)
 
+                base_name, _ = os.path.splitext(file_name)
                 output_path = os.path.join(new_dir, f'{base_name}.m4a')
                 
                 logging.info(f"Adjusting '{file_name}' from BPM: {bpm} to {bpm_to_use}")
