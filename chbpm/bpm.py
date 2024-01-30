@@ -54,7 +54,7 @@ def adjust_tempo_ffmpeg(
 
 
 def process_audio_files(
-    input_dir, output_dir, target_bpm, range_percentage, ffmpeg_options
+    input_dir, output_dir, target_bpm, range_percentage, ffmpeg_options, to_m4a=False
 ):
     lower_bound = target_bpm * (1 - range_percentage / 100)
     upper_bound = target_bpm * (1 + range_percentage / 100)
@@ -85,8 +85,9 @@ def process_audio_files(
                 if not os.path.exists(new_dir):
                     os.makedirs(new_dir)
 
-                base_name, _ = os.path.splitext(file_name)
-                output_path = os.path.join(new_dir, f"{base_name}.m4a")
+                base_name, original_ext = os.path.splitext(file_name)
+                new_ext = '.m4a' if to_m4a else original_ext
+                output_path = os.path.join(new_dir, f"{base_name}{new_ext}")
 
                 logging.info(f"Adjusting '{file_name}' from BPM: {bpm} to {bpm_to_use}")
                 adjust_tempo_ffmpeg(
@@ -98,12 +99,12 @@ def process_audio_files(
                 traceback.print_exc()
 
 
-def main(input_path, output_path, target_bpm, range_percentage, ffmpeg_options):
+def main(input_path, output_path, target_bpm, range_percentage, ffmpeg_options, to_m4a=False):
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
     process_audio_files(
-        input_path, output_path, target_bpm, range_percentage, ffmpeg_options
+        input_path, output_path, target_bpm, range_percentage, ffmpeg_options, to_m4a
     )
 
     logging.info("Processing completed.")

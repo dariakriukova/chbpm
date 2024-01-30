@@ -30,6 +30,12 @@ def main():
     parser.add_argument(
         "--log", help="Set log level", default="INFO"
     )
+    parser.add_argument(
+        '--to_m4a',
+        action='store_true',
+        help='Convert output audio files to m4a format'
+    )
+
 
     args = parser.parse_args()
 
@@ -47,6 +53,7 @@ def main():
         args.target_bpm,
         args.range_percentage,
         args.ffmpeg_options,
+        args.to_m4a
     )
 
 
