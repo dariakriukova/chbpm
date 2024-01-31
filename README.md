@@ -11,7 +11,7 @@ Chbpm is a Python-based tool designed for analyzing and adjusting the tempo of m
 - **Error Logging**: Detailed logging for troubleshooting, including optional suppression of verbose `ffmpeg` metadata output.
 
 ## Installation
-Ensure `ffmpeg` are installed on your system. [Installation inctructions](https://ffmpeg.org/download.html)
+Ensure `ffmpeg` is installed on your system. [Installation inctructions.](https://ffmpeg.org/download.html)
 ### For Users
 ```bash
 pip install chbpm
