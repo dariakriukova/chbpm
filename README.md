@@ -1,7 +1,7 @@
 # Rhythm Runner: BPM Adjustment Tool
 
 ## Overview
-Rhythm Runner is a Python-based tool designed for analyzing and adjusting the tempo of music tracks. This tool is ideal for fitness enthusiasts, dancers, and anyone who needs music to maintain a consistent BPM for their activities. The primary goal is to adjust the BPM of songs to fit within a target BPM range, facilitating a consistent pace during workouts or dance routines.
+Chbpm is a Python-based tool designed for analyzing and adjusting the tempo of music tracks. This tool is ideal for fitness enthusiasts, dancers, and anyone who needs music to maintain a consistent BPM for their activities. The primary goal is to adjust the BPM of songs to fit within a target BPM range, facilitating a consistent pace during workouts or dance routines.
 
 ## Features
 - **BPM Analysis**: Automatically analyzes the BPM of music files.
@@ -11,10 +11,10 @@ Rhythm Runner is a Python-based tool designed for analyzing and adjusting the te
 - **Error Logging**: Detailed logging for troubleshooting, including optional suppression of verbose `ffmpeg` metadata output.
 
 ## Installation
-Ensure Python and `ffmpeg` are installed on your system.
+Ensure `ffmpeg` are installed on your system. [Installation inctructions](https://ffmpeg.org/download.html)
 ### For Users
 ```bash
-pip install chbpm==0.1.0
+pip install chbpm
 ```
 
 ### For Developers
