@@ -45,24 +45,14 @@ python -m chbpm path_to_music_folder
 
 ### Command-Line Options
 - `input_path`: Path to the input music folder. 
-```bash
-python -m chbpm <input_path>
-```
+
 - `-o`, `--output_path`: Path to the output folder where adjusted music files will be saved. Defaults to `adjusted`.  
-```bash
-python -m chbpm <input_path> -o <output_path>
-```
+
 - `-t`, `--target_bpm`: Optional target BPM for tempo adjustment. Defaults to `180`.  
-```bash
-python -m chbpm <input_path> -t <target_bpm>
-```
+
 - `-r`, `--range_percentage`: Percentage for BPM range adjustment. Defaults to `15%`. This setting determines the 
 flexibility in BPM adjustment.  
-```bash
-python -m chbpm <input_path> -r <range_percentage>
-```
 
 - `--log`: Set log level. INFO by default.
-```bash
-python -m chbpm <input_path> --log DEBUG
-```
+
+- `--format`: Convert output audio files to given format. By default keeps the original format.
