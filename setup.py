@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='chbpm',
-    version='0.1.0',
+    version='0.1.1',
     packages=find_packages(),
     description='A Python library for BPM adjustment in audio files',
     long_description=open('README.md').read(),

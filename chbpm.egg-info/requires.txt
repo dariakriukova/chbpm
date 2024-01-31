@@ -1,0 +1,4 @@
+librosa
+pydub
+soundfile
+audioread

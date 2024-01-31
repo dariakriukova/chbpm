@@ -1,0 +1,2 @@
+[console_scripts]
+chbpm = chbpm.__main__:main
