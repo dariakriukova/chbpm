@@ -10,7 +10,6 @@ warnings.filterwarnings("ignore", category=FutureWarning, module="librosa.core.a
 warnings.filterwarnings("ignore")
 
 
-
 def analyze_bpm(file_path, target_bpm):
     try:
         y, sr = librosa.load(file_path, sr=None, mono=True)
@@ -22,10 +21,7 @@ def analyze_bpm(file_path, target_bpm):
         return None
 
 
-def adjust_tempo_ffmpeg(
-    input_file, output_file, original_bpm, target_bpm, ffmpeg_options
-):
-    tempo_factor = target_bpm / original_bpm
+def adjust_tempo_ffmpeg(input_file, output_file, format, tempo_factor, ffmpeg_options):
     command = [
         "ffmpeg",
         "-loglevel",
@@ -34,26 +30,32 @@ def adjust_tempo_ffmpeg(
         input_file,
         "-filter:a",
         f"atempo={tempo_factor}",
-        "-c:v",
-        "copy",
-        "-map",
+        "-map_metadata",
         "0",
         "-y",
-        output_file,
     ]
+
+    if format.lower() in {"mp3", "mp4", "m4a", "aac", "flac", "mkv"}:
+        command.extend(["-map", "0", '-c:v', 'copy'])
+    else:
+        command.extend(["-map", "0:a"])  #  keep only audio (drop images)
 
     if ffmpeg_options:
         command.extend(ffmpeg_options.split(" "))
 
-    logging.debug("Executing command: " + " ".join(command))
+    command.append(output_file)
+
+    logging.debug("Executing command: %s", " ".join(command))
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.stdout:
-        logging.debug("FFmpeg Output: " + result.stdout.decode('utf-8'))
+        logging.debug("FFmpeg Output: %s", result.stdout.decode("utf-8"))
     if result.stderr:
-        logging.error("FFmpeg Error: " + result.stderr.decode('utf-8'))
+        logging.error("FFmpeg Error: %s", result.stderr.decode("utf-8"))
 
 
-def process_audio_files(input_dir, output_dir, target_bpm, range_percentage, ffmpeg_options, format):
+def process_audio_files(
+    input_dir, output_dir, target_bpm, range_percentage, ffmpeg_options, format
+):
     lower_bound = target_bpm * (1 - range_percentage / 100)
     upper_bound = target_bpm * (1 + range_percentage / 100)
 
@@ -81,12 +83,19 @@ def process_audio_files(input_dir, output_dir, target_bpm, range_percentage, ffm
                 relative_path = os.path.relpath(root, input_dir)
                 new_dir = os.path.join(output_dir, relative_path)
 
+            if not os.path.exists(new_dir):
+                os.makedirs(new_dir)
+
             base_name, original_ext = os.path.splitext(file_name)
-            new_ext = f'.{format}' if format is not None else original_ext
-            output_path = os.path.join(new_dir, f"{base_name}{new_ext}")
+            file_ext = format if format is not None else original_ext[1:]
+            output_path = os.path.join(new_dir, f"{base_name}.{file_ext}")
 
             logging.info(f"Adjusting '{file_name}' from BPM: {bpm} to {bpm_to_use}")
-            adjust_tempo_ffmpeg(file_path, output_path, bpm, bpm_to_use, ffmpeg_options)
+
+            tempo_factor = bpm_to_use / bpm
+            adjust_tempo_ffmpeg(
+                file_path, output_path, file_ext, tempo_factor, ffmpeg_options
+            )
 
         except Exception as e:
             logging.error(f"Error processing {file_name}: {e}")
@@ -103,11 +112,9 @@ def process_audio_files(input_dir, output_dir, target_bpm, range_percentage, ffm
         logging.error(f"The input path '{input_dir}' is not a valid file or directory.")
 
 
-
-def main(input_path, output_path, target_bpm, range_percentage, ffmpeg_options, to_m4a=False):
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
-
+def main(
+    input_path, output_path, target_bpm, range_percentage, ffmpeg_options, to_m4a=False
+):
     process_audio_files(
         input_path, output_path, target_bpm, range_percentage, ffmpeg_options, to_m4a
     )
