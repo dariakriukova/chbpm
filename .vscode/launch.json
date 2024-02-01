@@ -21,6 +21,15 @@
             "console": "integratedTerminal",
             "justMyCode": false,
             "args": ["/tmp/running", "--ffmeg_options=\"-c:a libfdk_aac\""]
+        },
+        {
+            "name": "chbpm test",
+            "type": "python",
+            "request": "launch",
+            "module": "chbpm",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["/tmp/Music"]
         }
     ]
 }
