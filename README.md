@@ -1,5 +1,14 @@
 # Chbpm: BPM Adjustment Tool
 
+
+ ██████╗██╗  ██╗██████╗ ██████╗ ███╗   ███╗
+██╔════╝██║  ██║██╔══██╗██╔══██╗████╗ ████║
+██║     ███████║██████╔╝██████╔╝██╔████╔██║
+██║     ██╔══██║██╔══██╗██╔═══╝ ██║╚██╔╝██║
+╚██████╗██║  ██║██████╔╝██║     ██║ ╚═╝ ██║
+ ╚═════╝╚═╝  ╚═╝╚═════╝ ╚═╝     ╚═╝     ╚═╝
+                                           
+
 ## Overview
 Chbpm is a Python-based tool designed for analyzing and adjusting the tempo of music tracks. This tool is ideal for fitness enthusiasts, dancers, and anyone who needs music to maintain a consistent BPM for their activities. The primary goal is to adjust the BPM of songs to fit within a target BPM range, facilitating a consistent pace during workouts or dance routines.
 
