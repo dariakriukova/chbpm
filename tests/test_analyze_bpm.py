@@ -1,8 +1,5 @@
 import pytest
 from chbpm.bpm import analyze_bpm
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 test_cases = [
     ('tests/data/60.m4a', 60),
@@ -15,7 +12,5 @@ test_cases = [
 
 @pytest.mark.parametrize("file_path, expected_bpm", test_cases)
 def test_analyze_bpm_known_file(file_path, expected_bpm):
-    tolerance = 5
-    bpm = analyze_bpm(file_path, expected_bpm)
-    assert expected_bpm - tolerance <= bpm <= expected_bpm + tolerance, f"Expected BPM to be within {expected_bpm - tolerance} to {expected_bpm + tolerance}, got {bpm}"
-    logging.info(f"Detected BPM: {bpm}")
+    bpm = analyze_bpm(file_path, 180)
+    assert bpm == pytest.approx(expected_bpm, .03)
